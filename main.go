@@ -7,6 +7,11 @@ import (
 	"time"
 )
 
+const (
+	InfoColor  = "\033[1;34m%s\033[0m"
+	ErrorColor = "\033[1;36m%s\033[0m"
+)
+
 /*
 Any live cell with fewer than two live neighbours dies, as if by underpopulation.
 Any live cell with two or three live neighbours lives on to the next generation.
@@ -15,11 +20,18 @@ Any dead cell with exactly three live neighbours becomes a live cell, as if by r
 */
 
 func main() {
-	boardY := 10
-	boardX := 6
+	boardY := 30
+	boardX := 28
 	board := make([][]string, boardY)
 	for i := 0; i < boardY; i++ {
-		board[i] = []string{".", "*", ".", "*", ".", "."}
+		board[i] = make([]string, boardX)
+		for j := 0; j < boardX; j++ {
+			if j%2 == 0 {
+				board[i][j] = "*"
+			} else {
+				board[i][j] = "."
+			}
+		}
 	}
 
 	for {
@@ -97,7 +109,12 @@ func getAliveNeighbours(board [][]string, row, col, maxRow, maxCol int) int {
 func drawBoard(board [][]string) {
 	for row := 0; row < len(board); row++ {
 		for column := 0; column < len(board[row]); column++ {
-			fmt.Print(board[row][column], " ")
+			if board[row][column] == "*" {
+				fmt.Fprintf(os.Stdout, ErrorColor, board[row][column])
+			} else {
+				fmt.Fprintf(os.Stdout, InfoColor, board[row][column])
+			}
+			fmt.Print(" ")
 		}
 		fmt.Print("\n")
 	}
